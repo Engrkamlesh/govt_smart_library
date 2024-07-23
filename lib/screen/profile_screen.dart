@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:govt_smart_library/controller/book_controller.dart';
+import 'package:govt_smart_library/screen/login_screen.dart';
 import '../controller/auth_controller.dart';
 import 'edit_profilescreen.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
   final AuthController authController = Get.find();
+  
+  final BookController controller = Get.put(BookController());
+  
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +56,7 @@ class ProfileScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(130.0),
                                     color: const Color(0xff0089FB).withOpacity(0.09),
                                     ),
-                                        child: userData['picture'] !=null?Image.network(userData['picture'],fit: BoxFit.cover,):Image.asset('assets/images/books.png',fit: BoxFit.cover),
+                                        child: userData['picture'] !=null && userData['picture'] !=""?Image.network(userData['picture'],fit: BoxFit.cover,):Image.asset('assets/images/profile.jpg',fit: BoxFit.cover),
                               ),
                               Positioned(
                                 bottom: 10,
@@ -201,7 +206,9 @@ class ProfileScreen extends StatelessWidget {
                           const SizedBox(width: 5.0),
                           ListTile(
                             onTap: (){
+                              controller.clearFavorites();
                               authController.signOut();
+                              Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>LoginScreen()));
                             },
                             contentPadding: EdgeInsets.zero,
                             leading: Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor),

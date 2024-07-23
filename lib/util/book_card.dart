@@ -12,7 +12,7 @@ class BookCard extends StatelessWidget {
   final String image;
   final String author;
   final bool favorite;
-  final VoidCallback? onClick;
+  final Widget? trailing;
 
   const BookCard({
     super.key,
@@ -21,7 +21,7 @@ class BookCard extends StatelessWidget {
     required this.image,
     required this.author,
     this.favorite = false,
-    this.onClick,
+    this.trailing,
   });
 
   @override
@@ -72,22 +72,13 @@ class BookCard extends StatelessWidget {
                 padding: const EdgeInsets.all(10.0),
                 child: Align(
                   alignment: Alignment.topRight,
-                  child: GestureDetector(
-                    onTap: onClick,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        color: Colors.white, 
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        favorite
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                        color: Theme.of(context).primaryColor,
-                        size: 20.sp,
-                      ),
+                  child: Container(
+                    
+                    decoration: const BoxDecoration(
+                      color: Colors.white, 
+                      shape: BoxShape.circle,
                     ),
+                    child: trailing
                   ),
                 ),
               ),

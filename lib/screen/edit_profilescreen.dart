@@ -31,8 +31,9 @@ class EditProfileScreen extends StatelessWidget {
           systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Obx(() {
+          print(controller.currentUserData);
           if (controller.currentUserData.isEmpty) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           nameController.text = controller.currentUserData['name'] ?? '';
@@ -158,8 +159,8 @@ class EditProfileScreen extends StatelessWidget {
                           phoneController.text,
                         );
                       },
-                      child: const Text('Save', style: TextStyle(fontSize: 15, color: Colors.white)),
-                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).primaryColor)),
+                      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).primaryColor)),
+                      child: Obx(()=> controller.isLoading.value?const CircularProgressIndicator(color: Colors.white,): const Text('Save', style: TextStyle(fontSize: 15, color: Colors.white))),
                     ),
                   ],
                 ),

@@ -13,6 +13,7 @@ class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<User?> _user;
   FirebaseAuth auth = FirebaseAuth.instance;
+  RxBool isLoading = false.obs;
 
   @override
   void onReady() {
@@ -21,7 +22,8 @@ class AuthController extends GetxController {
     _user.bindStream(auth.userChanges());
     ever(_user, _initialScreen);
   }
-   var currentUserData = {}.obs;
+
+  var currentUserData = {}.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -36,7 +38,8 @@ class AuthController extends GetxController {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
         currentUserData.value = userDoc.data() as Map<String, dynamic>;
       }
     } catch (e) {
@@ -55,10 +58,13 @@ class AuthController extends GetxController {
   void register(String email, String password, String name, String nickname,
       String phone) async {
     try {
+      isLoading.value = true;
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       _userSetup(name, nickname, email, phone);
+      isLoading.value = false;
     } catch (e) {
+      isLoading.value = false;
       Get.snackbar("Error", e.toString(),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -68,8 +74,11 @@ class AuthController extends GetxController {
 
   void login(String email, String password) async {
     try {
+      isLoading.value = true;
       await auth.signInWithEmailAndPassword(email: email, password: password);
+      isLoading.value = false;
     } catch (e) {
+      isLoading.value = false;
       Get.snackbar("Error", e.toString(),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -102,22 +111,24 @@ class AuthController extends GetxController {
         .collection('users')
         .doc(auth.currentUser!.uid)
         .set({
-          "jgjgjgjgjg":"uzser",
       'name': name,
       'nickname': nickname,
       'phone': phone,
-      "image": "",
       'email': email,
+      'picture': "",
       'uid': auth.currentUser!.uid
     });
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
+      isLoading.value = true;
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      isLoading.value = false;
       showCustomDialog(
           'Please check your email. We have sent a mail to reset your password.');
     } catch (e) {
+      isLoading.value = false;
       Get.snackbar('Error', 'Failed to send password reset email: $e');
     }
   }
@@ -125,8 +136,14 @@ class AuthController extends GetxController {
   void showCustomDialog(String message) {
     Get.dialog(
       AlertDialog(
-        title: Text('Password Reset'),
-        content: Text(message),
+        title: Text(
+          'Password Reset',
+          style: TextStyle(color: Colors.black),
+        ),
+        content: Text(
+          message,
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           TextButton(
             onPressed: () {
@@ -138,30 +155,6 @@ class AuthController extends GetxController {
       ),
     );
   }
-  // void updateProfile(String name, String nickName, String phone) async {
-  //   try {
-  //     User? user = FirebaseAuth.instance.currentUser;
-
-  //     if (user != null) {
-  //       // Update display name in Firebase Auth
-  //       await user.updateDisplayName(nickName);
-
-  //       // Update Firestore document
-  //       await FirebaseFirestore.instance
-  //           .collection('users')
-  //           .doc(user.uid)
-  //           .update({
-  //         'nickname': nickName,
-  //         'username': name,
-  //         'phone': phone,
-  //       });
-
-  //       Get.snackbar('Success', 'Profile updated successfully');
-  //     }
-  //   } catch (e) {
-  //     Get.snackbar('Error', 'Failed to update profile: $e');
-  //   }
-  // }
 
   Future<DocumentSnapshot> getUserData() async {
     return await FirebaseFirestore.instance
@@ -183,6 +176,7 @@ class AuthController extends GetxController {
   Future<void> uploadProfilePicture(
       File imageFile, String name, String nickName, String phone) async {
     try {
+      isLoading.value = true;
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
@@ -192,10 +186,8 @@ class AuthController extends GetxController {
         if (phone.isNotEmpty) updatedData['phone'] = phone;
         if (profileImagePath.isNotEmpty) {
           String fileName = '${user.uid}_profile.jpg';
-          Reference storageRef = FirebaseStorage.instance
-              .ref()
-              .child('picture')
-              .child(fileName);
+          Reference storageRef =
+              FirebaseStorage.instance.ref().child('picture').child(fileName);
 
           UploadTask uploadTask = storageRef.putFile(imageFile);
           await uploadTask.whenComplete(() => null);
@@ -208,10 +200,14 @@ class AuthController extends GetxController {
             .collection('users')
             .doc(user.uid)
             .update(updatedData);
-            Get.back();
+            loadCurrentUser();
+        Get.back();
+
+        isLoading.value = false;
         Get.snackbar('Success', 'Profile updated successfully');
       }
     } catch (e) {
+      isLoading.value = false;
       Get.snackbar('Error', 'Failed to update profile: $e');
     }
   }

@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class BookDetailScreen extends StatelessWidget {
@@ -24,8 +22,7 @@ class BookDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: SfPdfViewer.network(
-            'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf'),
+      body: SfPdfViewer.network(pdfPath),
     );
   }
 }

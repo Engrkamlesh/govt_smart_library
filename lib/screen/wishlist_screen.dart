@@ -23,24 +23,31 @@ class _WishlistScreenState extends State<WishlistScreen> {
         title: Text('Wishlist'),
         centerTitle: true,
       ),
-      body:MasonryGridView.count(
+      body:Obx(()=>controller.favoriteBooks.isEmpty?Center(child: Text("Favorite list is Empty...",style: TextStyle(color: Colors.black),),): MasonryGridView.count(
         padding: EdgeInsets.symmetric(horizontal: 10),
-                        itemCount: controller.bookList.length,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10.0,
-                        mainAxisSpacing: 15.0,
-                        itemBuilder: (BuildContext context, int index) {
-                          BookModel item = controller.bookList[index];
-                          return BookCard(
-                            onClick: () {},
-                            title: item.title,
-                            image: item.image,
-                            author: item.author,
-                            pdfPath:item.pdfUrl,
-                            favorite: true,
-                          );
-                        },
-                      ),
+        itemCount: controller.favoriteBooks.length,
+        crossAxisCount: 2,
+        crossAxisSpacing: 10.0,
+        mainAxisSpacing: 15.0,
+        itemBuilder: (BuildContext context, int index) {
+          BookModel item = controller.favoriteBooks[index];
+          return BookCard(
+            trailing: Obx(()=> IconButton(
+                          icon: Icon(
+                            item.favorite.value
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color:Theme.of(context).primaryColor ,
+                          ),
+                          onPressed: () => controller.toggleFavorite(item),
+                        )),
+            title: item.title,
+            image: item.image,
+            author: item.author,
+            pdfPath: item.pdfUrl,
+          );
+        },
+      ),)
     );
   }
 }

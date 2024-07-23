@@ -124,15 +124,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.black12)),
-                    child: Center(
-                      child: Text(
+                    child:Obx(()=> Center(
+                      child: authController.isLoading.value?CircularProgressIndicator(color: Colors.white,): Text(
                         'Login',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                    ),
+                    )),
                   ),
                 ),
                 SizedBox(height: 20),

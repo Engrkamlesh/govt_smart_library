@@ -97,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'your Phone Number',
                     MultiValidator([RequiredValidator(errorText: 'Required')]),
                     false,
-                    TextInputType.text,
+                    TextInputType.number,
                      phoneController),
                 const SizedBox(height: 10),
                 const Align(
@@ -156,15 +156,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.black12)),
-                    child: const Center(
-                      child: Text(
+                    child: Obx(()=> Center(
+                      child: authController.isLoading.value?CircularProgressIndicator(color: Colors.white,): Text(
                         'Create Account',
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                    ),
+                    )),
                   ),
                 ),
                 const SizedBox(height: 20),
