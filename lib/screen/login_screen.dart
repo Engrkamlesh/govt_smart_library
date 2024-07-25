@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  
   final formkey = GlobalKey<FormState>();
   final AuthController authController = Get.find();
   final TextEditingController emailController = TextEditingController();
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 SizedBox(height: 70),
-                Image.asset('assets/images/books.png',height: 160,),
+                Image.asset('assets/images/logo.jpeg',height: 160,),
                 SizedBox(height: 30),
                 Text(
                   'Govt Smart Library',

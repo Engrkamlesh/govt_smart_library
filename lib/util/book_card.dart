@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:govt_smart_library/screen/book_detail.dart';
 
-import '../screen/book_detail_screen.dart';
 
 class BookCard extends StatelessWidget {
   final String title;
@@ -28,12 +28,11 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(BookDetailScreen(
-          title: title,
-          pdfPath: pdfPath,
-          image: image,
-          author: author,
-        ));
+        Get.to(BookDetailScreen(title: title,url: pdfPath,));
+        // Get.to(BookDetailScreen(
+        //   title: title,
+        //   pdfPath: pdfPath,
+        // ));
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
